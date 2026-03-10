@@ -96,18 +96,16 @@ class WindowManager:
         
         for window in all_windows:
             match = True
+            
             if title:
-                if process_name:
-                    if window.process_name != process_name:
-                        match = False
-                elif exact_match:
+                if exact_match:
                     if window.title != title:
                         match = False
                 else:
                     if title.lower() not in window.title.lower():
                         match = False
             
-            if class_name and match:
+            if match and class_name:
                 if exact_match:
                     if window.class_name != class_name:
                         match = False
@@ -115,7 +113,11 @@ class WindowManager:
                     if class_name.lower() not in window.class_name.lower():
                         match = False
             
-            if match and (title or class_name):
+            if match and process_name:
+                if window.process_name is None or window.process_name.lower() != process_name.lower():
+                    match = False
+            
+            if match and (title or class_name or process_name):
                 matched_windows.append(window)
                 
         return matched_windows

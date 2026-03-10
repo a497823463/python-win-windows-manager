@@ -105,9 +105,9 @@ wheels = [
 ]
 
 [[package]]
-name = "win-ctrl"
+name = "window-manager"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "psutil" },
     { name = "pywin32" },

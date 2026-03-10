@@ -60,6 +60,10 @@ def test_find_windows(manager, mock_win32gui, mock_win32process, mock_psutil):
     mock_win32gui.GetClassName.return_value = "TestClass"
     mock_win32process.GetWindowThreadProcessId.return_value = (0, 1234)
     
+    mock_process = MagicMock()
+    mock_process.name.return_value = "test.exe"
+    mock_psutil.Process.return_value = mock_process
+    
     def side_effect(callback, ctx):
         callback(1, ctx)
         callback(2, ctx)
@@ -76,6 +80,14 @@ def test_find_windows(manager, mock_win32gui, mock_win32process, mock_psutil):
     
     found = manager.find_windows(title="Target Window", exact_match=True)
     assert len(found) == 1
+
+    # Test find by process_name
+    found = manager.find_windows(process_name="test.exe")
+    assert len(found) == 2 # Both windows have same PID in this mock
+    
+    found = manager.find_windows(process_name="other.exe")
+    assert len(found) == 0
+
 
 def test_window_controls(manager, mock_win32gui):
     handle = 12345
